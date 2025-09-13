@@ -36,14 +36,8 @@ const WhatsAppButton = () => {
   const phoneNumber = "5511956093623";
 
   const handleWhatsAppClick = () => {
-    // Mensagem base
-    const baseMessage = "Olá! Estou entrando em contato através do site e gostaria de mais informações.";
-    
-    // Captura a página atual
-    const currentPage = window.location.href;
-    
-    // Mensagem final com nome do site + página
-    const message = `${baseMessage}\n\n;
+    // Mensagem fixa
+    const message = "Olá! Estou entrando em contato através do site e gostaria de mais informações.";
 
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
@@ -68,3 +62,4 @@ const WhatsAppButton = () => {
 };
 
 export default WhatsAppButton;
+
