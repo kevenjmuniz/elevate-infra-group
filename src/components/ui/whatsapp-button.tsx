@@ -3,18 +3,12 @@ import { Button } from "@/components/ui/button";
 
 const WhatsAppButton = () => {
   const phoneNumber = "5511956093623";
-  const message = "Olá! Gostaria de saber mais sobre os serviços da Technova.";
   
   const handleWhatsAppClick = () => {
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-    
-    // Try to open in the same tab first, then fallback to new tab
-    try {
+    const whatsappUrl = `https://wa.me/${phoneNumber}`;
+    const win = window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+    if (!win) {
       window.location.href = whatsappUrl;
-    } catch (error) {
-      // Fallback to new window if blocked
-      window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
     }
   };
 
@@ -23,7 +17,7 @@ const WhatsAppButton = () => {
       <Button
         onClick={handleWhatsAppClick}
         size="lg"
-        className="rounded-full w-16 h-16 bg-green-500 hover:bg-green-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 group"
+        className="rounded-full w-16 h-16 bg-secondary text-secondary-foreground shadow-lg hover:shadow-xl hover:brightness-110 transition-all duration-300 group"
         aria-label="Falar no WhatsApp"
       >
         <MessageCircle className="h-8 w-8 group-hover:scale-110 transition-transform" />
