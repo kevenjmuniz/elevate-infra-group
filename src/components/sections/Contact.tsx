@@ -215,11 +215,11 @@ const Contact = () => {
                         <div>
                           <h4 className="font-semibold text-foreground">{info.title}</h4>
                           {info.link && info.link !== "#" ? (
-                            <a href={info.link} className="text-muted-foreground hover:text-primary transition-colors">
+                            <a href={info.link} className="text-muted-foreground hover:text-primary transition-colors break-all">
                               {info.content}
                             </a>
                           ) : (
-                            <p className="text-muted-foreground">{info.content}</p>
+                            <p className="text-muted-foreground break-all">{info.content}</p>
                           )}
                         </div>
                       </div>
