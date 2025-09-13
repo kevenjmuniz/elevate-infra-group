@@ -32,7 +32,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="h-5 w-5 text-secondary" />
-                <span className="text-primary-foreground/80">contato@technova.com.br</span>
+                <span className="text-primary-foreground/80">contato@technovasolutionsti.com.br</span>
               </div>
               <div className="flex items-center space-x-3">
                 <MapPin className="h-5 w-5 text-secondary" />
