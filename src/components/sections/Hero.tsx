@@ -13,9 +13,9 @@ const Hero = () => {
     <section id="home" className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary via-primary to-secondary/20 text-primary-foreground">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-white to-secondary bg-clip-text text-transparent">
-            Soluções Tecnológicas
-            <span className="block text-secondary">Completas</span>
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-secondary">
+            Tecnológia e Inovação
+            <span className="block text-secondary">Para o seu Negócio</span>
           </h1>
           
           <p className="text-xl md:text-2xl mb-8 text-primary-foreground/90 max-w-3xl mx-auto leading-relaxed">
