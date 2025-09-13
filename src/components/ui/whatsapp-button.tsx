@@ -43,7 +43,7 @@ const WhatsAppButton = () => {
     const currentPage = window.location.href;
     
     // Mensagem final com nome do site + página
-    const message = `${baseMessage}\n\nPágina: ${currentPage}`;
+    const message = `${baseMessage}\n\n;
 
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 
