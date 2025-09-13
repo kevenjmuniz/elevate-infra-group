@@ -13,7 +13,7 @@ const Contact = () => {
     email: '',
     phone: '',
     company: '',
-    service: '',
+    service: [] as string[],,
     message: ''
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -172,15 +172,31 @@ const Contact = () => {
                   </div>
 
                   <div>
-                    <Label htmlFor="service">Serviço de Interesse</Label>
-                    <Input
-                      id="service"
-                      name="service"
-                      placeholder="Ex: Cabeamento Estruturado, Virtualização, Monitoramento..."
-                      value={formData.service}
-                      onChange={handleInputChange}
-                      className="mt-1"
-                    />
+                    <Label className="mb-2 block">Serviços de Interesse</Label>
+
+                    {/* grid para organizar os checkboxes */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        {[
+                          "Cabeamento Estruturado",
+                          "Virtualização",
+                          "Monitoramento",
+                          "Consultoria em TI",
+                          "Backup & Recuperação",
+                          "Cloud Computing"
+                        ].map(service => (
+                          <label key={service} className="flex items-center space-x-2">
+                            <input
+                              type="checkbox"
+                              name="service"
+                              value={service}
+                              checked={formData.service.includes(service)}
+                              onChange={handleCheckboxChange}
+                              className="rounded border-gray-300"
+                            />
+                            <span>{service}</span>
+                          </label>
+                        ))}
+                    </div>
                   </div>
 
                   <div>
