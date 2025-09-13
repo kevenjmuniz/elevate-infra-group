@@ -1,5 +1,5 @@
 import { Mail, Phone, MapPin } from "lucide-react";
-import technovaLogo from "@/assets/technova-logo-old.png";
+import technovaLogo from "@/assets/logo technova sem fundo branco.png";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
