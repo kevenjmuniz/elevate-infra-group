@@ -13,17 +13,33 @@ const Contact = () => {
     email: '',
     phone: '',
     company: '',
-    service: [] as string[],,
+    service: [] as string[], // já ajustado para array
     message: ''
   });
+
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
 
+  // função que trata inputs normais
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  // 👉 aqui entra a função dos checkboxes
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { value, checked } = e.target;
+
+    setFormData(prev => {
+      if (checked) {
+        // adiciona valor no array
+        return { ...prev, service: [...prev.service, value] };
+      } else {
+        // remove valor do array
+        return { ...prev, service: prev.service.filter(s => s !== value) };
+      }
+    });
+  };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
