@@ -151,6 +151,9 @@ const Contact = () => {
                       <Input
                         id="phone"
                         name="phone"
+                        type="tel"
+                        pattern="^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$"
+                        placeholder="(11) 95609-3623"
                         value={formData.phone}
                         onChange={handleInputChange}
                         className="mt-1"
