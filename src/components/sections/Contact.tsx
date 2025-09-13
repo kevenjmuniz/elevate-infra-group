@@ -82,8 +82,8 @@ const Contact = () => {
     {
       icon: Mail,
       title: "E-mail",
-      content: "contato@technova.com.br",
-      link: "mailto:contato@technova.com.br"
+      content: "contato@technovasolutionsti.com.br",
+      link: "mailto:contato@technovasolutionsti.com.br"
     },
     {
       icon: MapPin,
