@@ -76,7 +76,7 @@ const About = () => {
             </div>
           ))}
         </div>
-
+        {/*
         <div className="mt-16 p-8 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-2xl">
           <div className="max-w-3xl mx-auto text-center">
             <h3 className="text-2xl font-bold text-foreground mb-4">Nossa Expertise</h3>
@@ -94,6 +94,7 @@ const About = () => {
             </div>
           </div>
         </div>
+        */}
       </div>
     </section>
   );
