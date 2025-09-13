@@ -8,7 +8,14 @@ const WhatsAppButton = () => {
   const handleWhatsAppClick = () => {
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-    window.open(whatsappUrl, '_blank');
+    
+    // Try to open in the same tab first, then fallback to new tab
+    try {
+      window.location.href = whatsappUrl;
+    } catch (error) {
+      // Fallback to new window if blocked
+      window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+    }
   };
 
   return (
