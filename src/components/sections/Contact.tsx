@@ -54,7 +54,7 @@ const Contact = () => {
           email: '',
           phone: '',
           company: '',
-          service: '',
+          service: [] as string[],
           message: ''
         });
       } else {
