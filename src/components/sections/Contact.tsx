@@ -247,7 +247,7 @@ const Contact = () => {
                    <div className="flex justify-center mb-4">
                      <ReCAPTCHA
                        ref={recaptchaRef}
-                       sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // Site key público de teste
+                       sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!} // Site key público de teste
                        onChange={(token) => setRecaptchaToken(token)}
                        onExpired={() => setRecaptchaToken(null)}
                      />
