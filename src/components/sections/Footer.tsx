@@ -98,7 +98,7 @@ const Footer = () => {
               © {currentYear} Technova. Todos os direitos reservados.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
-              <a href="#" className="text-primary-foreground/60 hover:text-secondary transition-colors text-sm">
+              <a href="/privacy-policy" className="text-primary-foreground/60 hover:text-secondary transition-colors text-sm">
                 Política de Privacidade
               </a>
               <a href="#" className="text-primary-foreground/60 hover:text-secondary transition-colors text-sm">

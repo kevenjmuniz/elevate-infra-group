@@ -4,8 +4,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Mail, Phone, MapPin, Clock } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -18,6 +19,8 @@ const Contact = () => {
   });
 
   const [isLoading, setIsLoading] = useState(false);
+  const [recaptchaToken, setRecaptchaToken] = useState<string | null>(null);
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
   const { toast } = useToast();
 
   // função que trata inputs normais
@@ -42,6 +45,16 @@ const Contact = () => {
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!recaptchaToken) {
+      toast({
+        title: "Verificação necessária",
+        description: "Por favor, complete a verificação reCAPTCHA.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -55,7 +68,8 @@ const Contact = () => {
         body: JSON.stringify({
           ...formData,
           timestamp: new Date().toISOString(),
-          source: "Technova Website"
+          source: "Technova Website",
+          recaptchaToken
         }),
       });
 
@@ -73,6 +87,8 @@ const Contact = () => {
           service: [] as string[],
           message: ''
         });
+        setRecaptchaToken(null);
+        recaptchaRef.current?.reset();
       } else {
         throw new Error('Erro no envio');
       }
@@ -228,9 +244,18 @@ const Contact = () => {
                     />
                   </div>
 
-                  <Button type="submit" size="lg" className="w-full" disabled={isLoading}>
-                    {isLoading ? "Enviando..." : "Enviar Solicitação"}
-                  </Button>
+                   <div className="flex justify-center mb-4">
+                     <ReCAPTCHA
+                       ref={recaptchaRef}
+                       sitekey="6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI" // Site key público de teste
+                       onChange={(token) => setRecaptchaToken(token)}
+                       onExpired={() => setRecaptchaToken(null)}
+                     />
+                   </div>
+
+                   <Button type="submit" size="lg" className="w-full" disabled={isLoading || !recaptchaToken}>
+                     {isLoading ? "Enviando..." : "Enviar Solicitação"}
+                   </Button>
                 </form>
               </CardContent>
             </Card>
