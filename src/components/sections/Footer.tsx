@@ -86,8 +86,9 @@ const Footer = () => {
               <li>Virtualização de Servidores</li>
               <li>Gestão de Servidores</li>
               <li>Gestão de Switch</li>
-              <li>Monitoramento Zabbix</li>
-              <li>Monitoramento PRTG</li>
+              <li>Monitoramento de ambientes criticos</li>
+              <li>Implementação de firewall</li>
+              <li>Implementação Pabx</li>
             </ul>
           </div>
         </div>
@@ -95,7 +96,7 @@ const Footer = () => {
         <div className="border-t border-primary-foreground/20 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-primary-foreground/60 text-sm">
-              © {currentYear} Technova. Todos os direitos reservados.
+              © {currentYear} Technova Solutions TI. Todos os direitos reservados.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0">
               <a href="/privacy-policy" className="text-primary-foreground/60 hover:text-secondary transition-colors text-sm">
