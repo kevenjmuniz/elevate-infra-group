@@ -9,6 +9,11 @@ import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import BlogAdmin from "./pages/BlogAdmin";
 
+// 👇 importa os novos arquivos
+import RequireAuth from "@/components/auth/RequireAuth";
+import Login from "./pages/Login";
+import Forbidden from "./pages/Forbidden";
+
 const App = () => (
   <TooltipProvider>
     <Toaster />
@@ -19,8 +24,24 @@ const App = () => (
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
-        <Route path="/blog-admin" element={<BlogAdmin />} />
-        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+
+        {/* Página de login */}
+        <Route path="/login" element={<Login />} />
+
+        {/* Página de acesso negado */}
+        <Route path="/403" element={<Forbidden />} />
+
+        {/* Protege o painel de admin */}
+        <Route
+          path="/blog-admin"
+          element={
+            <RequireAuth requireAdmin>
+              <BlogAdmin />
+            </RequireAuth>
+          }
+        />
+
+        {/* Catch-all */}
         <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
