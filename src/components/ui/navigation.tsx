@@ -1,12 +1,21 @@
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
 import technovaLogo from "@/assets/technova-logo.png";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
 
   const scrollToSection = (sectionId: string) => {
+    if (!isHomePage) {
+      // Navigate to home page with section hash
+      window.location.href = `/#${sectionId}`;
+      return;
+    }
+    
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -19,11 +28,13 @@ const Navigation = () => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="flex items-center">
-            <img 
-              src={technovaLogo} 
-              alt="Technova Logo" 
-              className="h-8 w-auto"
-            />
+            <Link to="/">
+              <img 
+                src={technovaLogo} 
+                alt="Technova Logo" 
+                className="h-8 w-auto hover:opacity-80 transition-opacity"
+              />
+            </Link>
           </div>
           
           <div className="hidden md:block">
@@ -52,6 +63,12 @@ const Navigation = () => {
               >
                 Contato
               </button>
+              <Link 
+                to="/blog"
+                className="text-foreground hover:text-primary transition-colors duration-200 font-medium"
+              >
+                Blog
+              </Link>
             </div>
           </div>
 
@@ -102,6 +119,13 @@ const Navigation = () => {
               >
                 Contato
               </button>
+              <Link 
+                to="/blog"
+                className="block px-3 py-2 text-base font-medium text-foreground hover:text-primary transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                Blog
+              </Link>
               <div className="px-3 py-2 space-y-2">
                 <Button variant="outline" className="w-full" onClick={() => scrollToSection('contact')}>
                   Orçamento
