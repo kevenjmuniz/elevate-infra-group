@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin, Instagram, Linkedin, Facebook } from "lucide-react";
 import technovaLogo from "@/assets/logo technova sem fundo branco.png";
 
 const Footer = () => {
@@ -37,6 +37,32 @@ const Footer = () => {
               <div className="flex items-center space-x-3">
                 <MapPin className="h-5 w-5 text-secondary" />
                 <span className="text-primary-foreground/80">São Paulo, SP - Brasil</span>
+              </div>
+            </div>
+            
+            <div className="mt-6">
+              <h4 className="text-lg font-semibold mb-4">Redes Sociais</h4>
+              <div className="flex space-x-4">
+                <a 
+                  href="https://www.instagram.com/techn.ovasolutions?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary-foreground/80 hover:text-secondary transition-colors"
+                >
+                  <Instagram className="h-6 w-6" />
+                </a>
+                <button 
+                  className="text-primary-foreground/80 hover:text-secondary transition-colors cursor-not-allowed opacity-50"
+                  title="Em breve"
+                >
+                  <Linkedin className="h-6 w-6" />
+                </button>
+                <button 
+                  className="text-primary-foreground/80 hover:text-secondary transition-colors cursor-not-allowed opacity-50"
+                  title="Em breve"
+                >
+                  <Facebook className="h-6 w-6" />
+                </button>
               </div>
             </div>
           </div>
