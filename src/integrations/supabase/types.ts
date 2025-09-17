@@ -63,6 +63,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "post_tags_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "v_public_posts"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "post_tags_tag_id_fkey"
             columns: ["tag_id"]
             isOneToOne: false
@@ -121,6 +128,27 @@ export type Database = {
           },
         ]
       }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          role: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          role?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       tags: {
         Row: {
           created_at: string
@@ -144,10 +172,38 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      v_public_posts: {
+        Row: {
+          category_id: string | null
+          category_name: string | null
+          category_slug: string | null
+          content: string | null
+          created_at: string | null
+          excerpt: string | null
+          featured_image: string | null
+          id: string | null
+          published: boolean | null
+          published_at: string | null
+          slug: string | null
+          title: string | null
+          updated_at: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "posts_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
-      [_ in never]: never
+      is_admin: {
+        Args: { uid: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
