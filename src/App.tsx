@@ -8,6 +8,7 @@ import PrivacyPolicy from "./pages/PrivacyPolicy";
 import Blog from "./pages/Blog";
 import BlogPost from "./pages/BlogPost";
 import BlogAdmin from "./pages/BlogAdmin";
+import NewsletterAdmin from "./pages/NewsletterAdmin";
 
 // 👇 importa os novos arquivos
 import RequireAuth from "@/components/auth/RequireAuth";
@@ -37,6 +38,16 @@ const App = () => (
           element={
             <RequireAuth requireAdmin>
               <BlogAdmin />
+            </RequireAuth>
+          }
+        />
+
+        {/* Protege o painel de newsletter admin */}
+        <Route
+          path="/newsletter-admin"
+          element={
+            <RequireAuth requireAdmin>
+              <NewsletterAdmin />
             </RequireAuth>
           }
         />
