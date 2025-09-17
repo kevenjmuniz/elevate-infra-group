@@ -68,7 +68,6 @@ const Contact = () => {
             : "{}", // formato array do Postgres
         message: formData.message,
         source: "Technova Website",
-        recaptcha_token: recaptchaToken,
       };
 
       const { error } = await supabase.from("contact_messages").insert([payload]);
