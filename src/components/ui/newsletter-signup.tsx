@@ -52,20 +52,17 @@ const NewsletterSignup = () => {
         });
         
         // Enviar dados para o webhook
-        try {
-          await fetch('https://n8n.lukeservices.com.br/webhook/60a494e5-a749-46de-8c76-3abb6d4d3ae2', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            mode: 'no-cors',
-            body: JSON.stringify({
-              email: email.toLowerCase().trim(),
-              name: name.trim() || null,
-              timestamp: new Date().toISOString(),
-              source: 'newsletter_signup'
-            }),
-          });
+      try {
+        await fetch("https://n8n.lukeservices.com.br/webhook/60a494e5-a749-46de-8c76-3abb6d4d3ae2", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name,                 // <- já tem
+            email,                // <- já tem
+            timestamp: new Date().toISOString(),
+            source: "newsletter_signup"
+          }),
+        });
         } catch (webhookError) {
           console.log('Webhook notification failed, but subscription was successful:', webhookError);
         }
