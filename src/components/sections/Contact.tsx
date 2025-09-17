@@ -7,15 +7,16 @@ import { Mail, Phone, MapPin, Clock } from "lucide-react";
 import { useState, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import ReCAPTCHA from "react-google-recaptcha";
+import { supabase } from "@/integrations/supabase/client"; // IMPORTAÇÃO ADICIONADA
 
 const Contact = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    company: '',
-    service: [] as string[], // já ajustado para array
-    message: ''
+    name: "",
+    email: "",
+    phone: "",
+    company: "",
+    service: [] as string[],
+    message: "",
   });
 
   const [isLoading, setIsLoading] = useState(false);
@@ -23,26 +24,23 @@ const Contact = () => {
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const { toast } = useToast();
 
-  // função que trata inputs normais
+  // 👉 função para inputs normais
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // 👉 aqui entra a função dos checkboxes
+  // 👉 função para checkboxes (array de serviços)
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = e.target;
-
-    setFormData(prev => {
-      if (checked) {
-        // adiciona valor no array
-        return { ...prev, service: [...prev.service, value] };
-      } else {
-        // remove valor do array
-        return { ...prev, service: prev.service.filter(s => s !== value) };
-      }
-    });
+    setFormData((prev) =>
+      checked
+        ? { ...prev, service: [...prev.service, value] }
+        : { ...prev, service: prev.service.filter((s) => s !== value) }
+    );
   };
+
+  // 👉 envio do formulário
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -55,48 +53,63 @@ const Contact = () => {
       return;
     }
 
+    if (!formData.name || !formData.email || !formData.message) {
+      toast({
+        title: "Campos obrigatórios",
+        description: "Preencha nome, e-mail e mensagem.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
+      toast({
+        title: "E-mail inválido",
+        description: "Verifique o endereço de e-mail.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
-      const webhookUrl = "https://n8n.lukeservices.com.br/webhook/5aeaabd8-914c-4274-a17c-3a87bfd42ade";
-      
-      const response = await fetch(webhookUrl, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...formData,
-          timestamp: new Date().toISOString(),
-          source: "Technova Website",
-          recaptchaToken
-        }),
+      const payload = {
+        name: formData.name.trim(),
+        email: formData.email.trim().toLowerCase(),
+        phone: formData.phone.trim() || null,
+        company: formData.company.trim() || null,
+        service: formData.service, // será salvo como text[]
+        message: formData.message.trim(),
+        source: "site",
+        recaptcha_token: recaptchaToken, // opcional
+      };
+
+      const { error } = await supabase.from("contact_messages").insert([payload]);
+
+      if (error) throw error;
+
+      toast({
+        title: "Mensagem enviada com sucesso!",
+        description: "Recebemos sua solicitação e entraremos em contato em breve.",
       });
 
-      if (response.ok) {
-        toast({
-          title: "Mensagem enviada com sucesso!",
-          description: "Recebemos sua solicitação e entraremos em contato em breve. Obrigado!",
-        });
-        
-        setFormData({
-          name: '',
-          email: '',
-          phone: '',
-          company: '',
-          service: [] as string[],
-          message: ''
-        });
-        setRecaptchaToken(null);
-        recaptchaRef.current?.reset();
-      } else {
-        throw new Error('Erro no envio');
-      }
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        company: "",
+        service: [],
+        message: "",
+      });
+      setRecaptchaToken(null);
+      recaptchaRef.current?.reset();
     } catch (error) {
       console.error("Erro ao enviar formulário:", error);
       toast({
         title: "Erro no envio",
-        description: "Ocorreu um erro ao enviar sua mensagem. Tente novamente ou entre em contato pelo WhatsApp.",
+        description:
+          "Ocorreu um erro ao enviar sua mensagem. Tente novamente ou entre em contato pelo WhatsApp.",
         variant: "destructive",
       });
     } finally {
@@ -109,26 +122,26 @@ const Contact = () => {
       icon: Phone,
       title: "Telefone",
       content: "(11) 95609-3623",
-      link: "tel:+5511956093623"
+      link: "tel:+5511956093623",
     },
     {
       icon: Mail,
       title: "E-mail",
       content: "contato@technovasolutionsti.com.br",
-      link: "mailto:contato@technovasolutionsti.com.br"
+      link: "mailto:contato@technovasolutionsti.com.br",
     },
     {
       icon: MapPin,
       title: "Endereço",
       content: "São Paulo, SP - Brasil",
-      link: "#"
+      link: "#",
     },
     {
       icon: Clock,
       title: "Horário",
       content: "Seg à Sex: 8h às 18h",
-      link: "#"
-    }
+      link: "#",
+    },
   ];
 
   return (
@@ -205,29 +218,27 @@ const Contact = () => {
 
                   <div>
                     <Label className="mb-2 block">Serviços de Interesse</Label>
-
-                    {/* grid para organizar os checkboxes */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                        {[
-                          "Cabeamento Estruturado",
-                          "Virtualização",
-                          "Monitoramento",
-                          "Consultoria em TI",
-                          "Backup & Recuperação",
-                          "Cloud Computing"
-                        ].map(service => (
-                          <label key={service} className="flex items-center space-x-2">
-                            <input
-                              type="checkbox"
-                              name="service"
-                              value={service}
-                              checked={formData.service.includes(service)}
-                              onChange={handleCheckboxChange}
-                              className="rounded border-gray-300"
-                            />
-                            <span>{service}</span>
-                          </label>
-                        ))}
+                      {[
+                        "Cabeamento Estruturado",
+                        "Virtualização",
+                        "Monitoramento",
+                        "Consultoria em TI",
+                        "Backup & Recuperação",
+                        "Cloud Computing",
+                      ].map((service) => (
+                        <label key={service} className="flex items-center space-x-2">
+                          <input
+                            type="checkbox"
+                            name="service"
+                            value={service}
+                            checked={formData.service.includes(service)}
+                            onChange={handleCheckboxChange}
+                            className="rounded border-gray-300"
+                          />
+                          <span>{service}</span>
+                        </label>
+                      ))}
                     </div>
                   </div>
 
@@ -244,18 +255,18 @@ const Contact = () => {
                     />
                   </div>
 
-                   <div className="flex justify-center mb-4">
-                     <ReCAPTCHA
-                       ref={recaptchaRef}
-                       sitekey="6Lf8s8orAAAAAMsrkqTGrPQB12hzMhQ-5DXIO0A0" // Site key público de teste
-                       onChange={(token) => setRecaptchaToken(token)}
-                       onExpired={() => setRecaptchaToken(null)}
-                     />
-                   </div>
+                  <div className="flex justify-center mb-4">
+                    <ReCAPTCHA
+                      ref={recaptchaRef}
+                      sitekey="6Lf8s8orAAAAAMsrkqTGrPQB12hzMhQ-5DXIO0A0" // sua site key pública
+                      onChange={(token) => setRecaptchaToken(token)}
+                      onExpired={() => setRecaptchaToken(null)}
+                    />
+                  </div>
 
-                   <Button type="submit" size="lg" className="w-full" disabled={isLoading || !recaptchaToken}>
-                     {isLoading ? "Enviando..." : "Enviar Solicitação"}
-                   </Button>
+                  <Button type="submit" size="lg" className="w-full" disabled={isLoading || !recaptchaToken}>
+                    {isLoading ? "Enviando..." : "Enviar Solicitação"}
+                  </Button>
                 </form>
               </CardContent>
             </Card>
@@ -275,7 +286,10 @@ const Contact = () => {
                         <div>
                           <h4 className="font-semibold text-foreground">{info.title}</h4>
                           {info.link && info.link !== "#" ? (
-                            <a href={info.link} className="text-muted-foreground hover:text-primary transition-colors break-all">
+                            <a
+                              href={info.link}
+                              className="text-muted-foreground hover:text-primary transition-colors break-all"
+                            >
                               {info.content}
                             </a>
                           ) : (
@@ -293,8 +307,8 @@ const Contact = () => {
               <CardContent className="p-8">
                 <h3 className="text-xl font-bold text-foreground mb-4">Atendimento Especializado</h3>
                 <p className="text-muted-foreground mb-6">
-                  Nossa equipe técnica está pronta para analisar suas necessidades e propor a melhor solução 
-                  para sua empresa. Oferecemos consultoria gratuita e orçamentos personalizados.
+                  Nossa equipe técnica está pronta para analisar suas necessidades e propor a melhor solução para sua empresa.
+                  Oferecemos consultoria gratuita e orçamentos personalizados.
                 </p>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li className="flex items-center">
