@@ -13,12 +13,25 @@ const NewsletterSignup = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!email) {
+
+    const cleanEmail = email.toLowerCase().trim();
+    const cleanName = name.trim() || null;
+
+    if (!cleanEmail) {
       toast({
         title: "Email obrigatório",
         description: "Por favor, insira seu email para se inscrever.",
-        variant: "destructive"
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // (opcional) validação simples de formato
+    if (!/^\S+@\S+\.\S+$/.test(cleanEmail)) {
+      toast({
+        title: "Email inválido",
+        description: "Verifique o endereço de email e tente novamente.",
+        variant: "destructive",
       });
       return;
     }
@@ -28,19 +41,15 @@ const NewsletterSignup = () => {
     try {
       const { error } = await supabase
         .from('newsletter_subscribers')
-        .insert([
-          {
-            email: email.toLowerCase().trim(),
-            name: name.trim() || null,
-          }
-        ]);
+        .insert([{ email: cleanEmail, name: cleanName }]);
 
       if (error) {
-        if (error.code === '23505') { // Unique constraint violation
+        if ((error as any).code === '23505') {
+          // unique_violation no Postgres
           toast({
             title: "Email já cadastrado",
             description: "Este email já está inscrito na nossa newsletter.",
-            variant: "destructive"
+            variant: "destructive",
           });
         } else {
           throw error;
@@ -50,32 +59,15 @@ const NewsletterSignup = () => {
           title: "Inscrição realizada!",
           description: "Você foi inscrito com sucesso na nossa newsletter.",
         });
-        
-        // Enviar dados para o webhook
-      try {
-        await fetch("https://n8n.lukeservices.com.br/webhook/60a494e5-a749-46de-8c76-3abb6d4d3ae2", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            name,                 // <- já tem
-            email,                // <- já tem
-            timestamp: new Date().toISOString(),
-            source: "newsletter_signup"
-          }),
-        });
-        } catch (webhookError) {
-          console.log('Webhook notification failed, but subscription was successful:', webhookError);
-        }
-        
         setEmail('');
         setName('');
       }
-    } catch (error) {
-      console.error('Erro ao inscrever na newsletter:', error);
+    } catch (err) {
+      console.error('Erro ao inscrever na newsletter:', err);
       toast({
         title: "Erro na inscrição",
         description: "Ocorreu um erro ao processar sua inscrição. Tente novamente.",
-        variant: "destructive"
+        variant: "destructive",
       });
     } finally {
       setIsLoading(false);
@@ -107,11 +99,7 @@ const NewsletterSignup = () => {
           required
           className="w-full"
         />
-        <Button 
-          type="submit" 
-          className="w-full" 
-          disabled={isLoading}
-        >
+        <Button type="submit" className="w-full" disabled={isLoading}>
           {isLoading ? 'Inscrevendo...' : 'Inscrever-se'}
         </Button>
       </form>
