@@ -7,7 +7,7 @@ import { Mail, Phone, MapPin, Clock } from "lucide-react";
 import { useState, useRef } from "react";
 import { useToast } from "@/hooks/use-toast";
 import ReCAPTCHA from "react-google-recaptcha";
-import { supabase } from "@/integrations/supabase/client"; // IMPORTAÇÃO ADICIONADA
+import { supabase } from "@/integrations/supabase/client";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -24,23 +24,24 @@ const Contact = () => {
   const recaptchaRef = useRef<ReCAPTCHA>(null);
   const { toast } = useToast();
 
-  // 👉 função para inputs normais
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  // 👉 função para checkboxes (array de serviços)
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = e.target;
-    setFormData((prev) =>
-      checked
-        ? { ...prev, service: [...prev.service, value] }
-        : { ...prev, service: prev.service.filter((s) => s !== value) }
-    );
+    setFormData((prev) => {
+      if (checked) {
+        return { ...prev, service: [...prev.service, value] };
+      } else {
+        return { ...prev, service: prev.service.filter((s) => s !== value) };
+      }
+    });
   };
 
-  // 👉 envio do formulário
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -53,36 +54,21 @@ const Contact = () => {
       return;
     }
 
-    if (!formData.name || !formData.email || !formData.message) {
-      toast({
-        title: "Campos obrigatórios",
-        description: "Preencha nome, e-mail e mensagem.",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-      toast({
-        title: "E-mail inválido",
-        description: "Verifique o endereço de e-mail.",
-        variant: "destructive",
-      });
-      return;
-    }
-
     setIsLoading(true);
 
     try {
       const payload = {
-        name: formData.name.trim(),
-        email: formData.email.trim().toLowerCase(),
-        phone: formData.phone.trim() || null,
-        company: formData.company.trim() || null,
-        service: formData.service, // será salvo como text[]
-        message: formData.message.trim(),
-        source: "site",
-        recaptcha_token: recaptchaToken, // opcional
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        company: formData.company,
+        service:
+          formData.service.length > 0
+            ? `{${formData.service.join(",")}}`
+            : "{}", // formato array do Postgres
+        message: formData.message,
+        source: "Technova Website",
+        recaptcha_token: recaptchaToken,
       };
 
       const { error } = await supabase.from("contact_messages").insert([payload]);
@@ -91,7 +77,8 @@ const Contact = () => {
 
       toast({
         title: "Mensagem enviada com sucesso!",
-        description: "Recebemos sua solicitação e entraremos em contato em breve.",
+        description:
+          "Recebemos sua solicitação e entraremos em contato em breve. Obrigado!",
       });
 
       setFormData({
@@ -152,7 +139,8 @@ const Contact = () => {
             Entre em <span className="text-primary">Contato</span>
           </h2>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Pronto para transformar sua infraestrutura de TI? Fale conosco e descubra como podemos ajudar sua empresa.
+            Pronto para transformar sua infraestrutura de TI? Fale conosco e descubra
+            como podemos ajudar sua empresa.
           </p>
         </div>
 
@@ -197,7 +185,6 @@ const Contact = () => {
                         id="phone"
                         name="phone"
                         type="tel"
-                        pattern="^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$"
                         placeholder="(11) 95609-3623"
                         value={formData.phone}
                         onChange={handleInputChange}
@@ -227,7 +214,10 @@ const Contact = () => {
                         "Backup & Recuperação",
                         "Cloud Computing",
                       ].map((service) => (
-                        <label key={service} className="flex items-center space-x-2">
+                        <label
+                          key={service}
+                          className="flex items-center space-x-2"
+                        >
                           <input
                             type="checkbox"
                             name="service"
@@ -258,13 +248,18 @@ const Contact = () => {
                   <div className="flex justify-center mb-4">
                     <ReCAPTCHA
                       ref={recaptchaRef}
-                      sitekey="6Lf8s8orAAAAAMsrkqTGrPQB12hzMhQ-5DXIO0A0" // sua site key pública
+                      sitekey="6Lf8s8orAAAAAMsrkqTGrPQB12hzMhQ-5DXIO0A0"
                       onChange={(token) => setRecaptchaToken(token)}
                       onExpired={() => setRecaptchaToken(null)}
                     />
                   </div>
 
-                  <Button type="submit" size="lg" className="w-full" disabled={isLoading || !recaptchaToken}>
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="w-full"
+                    disabled={isLoading || !recaptchaToken}
+                  >
                     {isLoading ? "Enviando..." : "Enviar Solicitação"}
                   </Button>
                 </form>
@@ -274,7 +269,9 @@ const Contact = () => {
 
           <div className="space-y-8">
             <div>
-              <h3 className="text-2xl font-bold text-foreground mb-6">Informações de Contato</h3>
+              <h3 className="text-2xl font-bold text-foreground mb-6">
+                Informações de Contato
+              </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {contactInfo.map((info, index) => (
                   <Card key={index} className="hover:shadow-md transition-shadow">
@@ -284,7 +281,9 @@ const Contact = () => {
                           <info.icon className="h-6 w-6 text-primary" />
                         </div>
                         <div>
-                          <h4 className="font-semibold text-foreground">{info.title}</h4>
+                          <h4 className="font-semibold text-foreground">
+                            {info.title}
+                          </h4>
                           {info.link && info.link !== "#" ? (
                             <a
                               href={info.link}
@@ -293,7 +292,9 @@ const Contact = () => {
                               {info.content}
                             </a>
                           ) : (
-                            <p className="text-muted-foreground break-all">{info.content}</p>
+                            <p className="text-muted-foreground break-all">
+                              {info.content}
+                            </p>
                           )}
                         </div>
                       </div>
@@ -305,10 +306,13 @@ const Contact = () => {
 
             <Card className="bg-gradient-to-r from-primary/10 to-secondary/10">
               <CardContent className="p-8">
-                <h3 className="text-xl font-bold text-foreground mb-4">Atendimento Especializado</h3>
+                <h3 className="text-xl font-bold text-foreground mb-4">
+                  Atendimento Especializado
+                </h3>
                 <p className="text-muted-foreground mb-6">
-                  Nossa equipe técnica está pronta para analisar suas necessidades e propor a melhor solução para sua empresa.
-                  Oferecemos consultoria gratuita e orçamentos personalizados.
+                  Nossa equipe técnica está pronta para analisar suas necessidades e
+                  propor a melhor solução para sua empresa. Oferecemos consultoria
+                  gratuita e orçamentos personalizados.
                 </p>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   <li className="flex items-center">
