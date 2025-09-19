@@ -1,5 +1,5 @@
 import { Mail, Phone, MapPin, Instagram, Linkedin, Facebook } from "lucide-react";
-import technovaLogo from "@/assets/logo technova sem fundo branco.png";
+import technovaLogo from "@/assets/technova-logo-optimized.png";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -20,6 +20,7 @@ const Footer = () => {
               src={technovaLogo} 
               alt="Technova Logo" 
               className="h-10 w-auto mb-6"
+              loading="lazy"
             />
             <p className="text-primary-foreground/80 mb-6 max-w-md">
               Transformamos tecnologia em soluções eficientes para sua empresa. 

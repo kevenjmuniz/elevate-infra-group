@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import technovaLogo from "@/assets/technova-logo.png";
+import technovaLogo from "@/assets/technova-logo-optimized.png";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,6 +33,8 @@ const Navigation = () => {
                 src={technovaLogo} 
                 alt="Technova Logo" 
                 className="h-8 w-auto hover:opacity-80 transition-opacity"
+                loading="eager"
+                fetchPriority="high"
               />
             </Link>
           </div>

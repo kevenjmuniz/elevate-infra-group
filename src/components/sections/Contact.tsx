@@ -62,10 +62,7 @@ const Contact = () => {
         email: formData.email,
         phone: formData.phone,
         company: formData.company,
-        service:
-          formData.service.length > 0
-            ? `{${formData.service.join(",")}}`
-            : "{}", // formato array do Postgres
+        service: formData.service.length > 0 ? formData.service : null,
         message: formData.message,
         source: "Technova Website",
       };
